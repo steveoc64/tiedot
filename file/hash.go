@@ -11,12 +11,12 @@ import (
 )
 
 const (
-	HASH_TABLE_GROWTH      = uint64(134217728) // Grows every 128MB
+	HASH_TABLE_GROWTH      = uint64(1048576) // Grows every 1MB
 	ENTRY_VALID            = byte(1)
 	ENTRY_INVALID          = byte(0)
 	ENTRY_SIZE             = uint64(1 + 10 + 10) // byte(validity), uint64(hash key), uint64(value)
 	BUCKET_HEADER_SIZE     = uint64(10)          // uint64(next bucket)
-	HASH_TABLE_REGION_SIZE = 1024 * 4            // 4KB per locking region, roughly the size of a single bucket
+	HASH_TABLE_REGION_SIZE = 1024 * 16           // 16KB per locking region
 )
 
 type HashTable struct {

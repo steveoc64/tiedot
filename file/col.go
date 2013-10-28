@@ -10,19 +10,15 @@ import (
 )
 
 const (
-	COL_FILE_GROWTH      = uint64(134217728) // Grows every 128MB
-	DOC_MAX_ROOM         = 33554432          // Maximum single document size
-	DOC_HEADER           = 1 + 10            // byte(validity), uint64(document room)
+	COL_FILE_GROWTH      = uint64(1048576) // Grows every 1MB
+	DOC_MAX_ROOM         = 65536           // Maximum single document size
+	DOC_HEADER           = 1 + 10          // byte(validity), uint64(document room)
 	DOC_VALID            = byte(1)
 	DOC_INVALID          = byte(0)
 	COL_FILE_REGION_SIZE = 1024 * 128 // 128 KB per locking region
 
-	// prepared document padding (2048 bytes of space)
+	// prepared document padding (1024 bytes of space)
 	PADDING = "                                                                                                                                " +
-		"                                                                                                                                " +
-		"                                                                                                                                " +
-		"                                                                                                                                " +
-		"                                                                                                                                " +
 		"                                                                                                                                " +
 		"                                                                                                                                " +
 		"                                                                                                                                "

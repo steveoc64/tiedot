@@ -101,7 +101,7 @@ func (col *Col) LoadConf() error {
 		return err
 	}
 	// create UID index config (UID index is not specified in config file)
-	col.Config.Indexes = append(col.Config.Indexes, IndexConf{FileName: "_uid", PerBucket: 200, HashBits: 14, IndexedPath: []string{"_uid"}})
+	col.Config.Indexes = append(col.Config.Indexes, IndexConf{FileName: "_uid", PerBucket: 50, HashBits: 10, IndexedPath: []string{"_uid"}})
 	// open each index file
 	col.StrHT = make(map[string]*file.HashTable)
 	col.StrIC = make(map[string]*IndexConf)
@@ -337,7 +337,7 @@ func (col *Col) Index(path []string) error {
 		v.File.Close()
 	}
 	// save and reload config
-	col.Config.Indexes = append(col.Config.Indexes, IndexConf{FileName: newFileName + strconv.Itoa(int(time.Now().UnixNano())), PerBucket: 200, HashBits: 14, IndexedPath: path})
+	col.Config.Indexes = append(col.Config.Indexes, IndexConf{FileName: newFileName + strconv.Itoa(int(time.Now().UnixNano())), PerBucket: 50, HashBits: 10, IndexedPath: path})
 	if err := col.BackupAndSaveConf(); err != nil {
 		return err
 	}
