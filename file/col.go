@@ -10,8 +10,8 @@ import (
 )
 
 const (
-	COL_FILE_GROWTH      = uint64(1048576) // Grows every 1MB
-	DOC_MAX_ROOM         = 65536           // Maximum single document size
+	COL_FILE_GROWTH      = uint64(2097152) // Grows every 2MB
+	DOC_MAX_ROOM         = 131072          // Maximum single document size (128KB)
 	DOC_HEADER           = 1 + 10          // byte(validity), uint64(document room)
 	DOC_VALID            = byte(1)
 	DOC_INVALID          = byte(0)

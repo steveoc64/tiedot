@@ -9,7 +9,7 @@ import (
 	"os"
 )
 
-const FILE_GROWTH_INCREMENTAL = uint64(16777216)
+const FILE_GROWTH_INCREMENTAL = uint64(1048576)
 
 type File struct {
 	Name                 string
