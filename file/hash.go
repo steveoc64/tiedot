@@ -17,14 +17,14 @@ const (
 	ENTRY_SIZE             = uint64(1 + 10 + 10) // byte(validity), uint64(hash key), uint64(value)
 	BUCKET_HEADER_SIZE     = uint64(10)          // uint64(next bucket)
 	HASH_TABLE_REGION_SIZE = 1024 * 16           // 16KB per locking region
-	BUCKET_HEADER_NEW      = uint64(2)           // new bucket will have this header
 )
 
 type HashTable struct {
-	File                                        *File
-	BucketSize, HashBits, PerBucket, NumBuckets uint64
-	tableGrowMutex                              sync.Mutex
-	regionRWMutex                               []*sync.RWMutex
+	File                            *File
+	BucketSize, HashBits, PerBucket uint64
+	NumBuckets, InitialBuckets      uint64
+	tableGrowMutex                  sync.Mutex
+	regionRWMutex                   []*sync.RWMutex
 }
 
 // Open a hash table file.
@@ -44,16 +44,29 @@ func OpenHash(name string, hashBits, perBucket uint64) (ht *HashTable, err error
 		tableGrowMutex: sync.Mutex{},
 		regionRWMutex:  rwMutexes}
 	ht.BucketSize = BUCKET_HEADER_SIZE + ENTRY_SIZE*perBucket
-	// file has to be big enough to contain all initial buckets
-	if minUsedSize := uint64(math.Pow(2, float64(hashBits))) * ht.BucketSize; ht.File.UsedSize < minUsedSize {
-		ht.File.CheckSizeAndEnsure(minUsedSize - ht.File.UsedSize)
-		ht.File.UsedSize = minUsedSize
+	// find out how many buckets are there in table
+	// first, assume that entire file is full of buckets
+	ht.File.UsedSize = ht.File.Size
+	ht.NumBuckets = ht.File.Size / ht.BucketSize
+	// next, find the longest bucket train
+	ht.InitialBuckets = uint64(math.Pow(2, float64(hashBits)))
+	longestBucketChain := ht.InitialBuckets
+	for i := uint64(0); i < ht.InitialBuckets; i++ {
+		lastBucket := ht.lastBucket(i)
+		if lastBucket+1 > longestBucketChain && lastBucket+1 <= ht.NumBuckets {
+			longestBucketChain = lastBucket + 1
+		}
 	}
-	// move append position to end of final bucket
-	if extra := ht.File.UsedSize % ht.BucketSize; extra != 0 {
-		ht.File.UsedSize += ht.BucketSize - extra
+	// calculate used size according to number of buckets
+	ht.NumBuckets = longestBucketChain
+	usedSize := ht.NumBuckets * ht.BucketSize
+	// grow the file if the size is not enough
+	if usedSize > ht.File.Size {
+		ht.File.UsedSize = ht.File.Size
+		ht.File.CheckSizeAndEnsure(((usedSize-ht.File.Size)/ht.BucketSize + 1) * ht.BucketSize)
 	}
-	ht.NumBuckets = ht.File.UsedSize / ht.BucketSize
+	ht.File.UsedSize = usedSize
+	log.Printf("%s has %d initial buckets, %d buckets, and %d bytes out of %d bytes in-use", name, ht.InitialBuckets, ht.NumBuckets, ht.File.UsedSize, ht.File.Size)
 	return ht, nil
 }
 
@@ -63,12 +76,13 @@ func (ht *HashTable) nextBucket(bucket uint64) uint64 {
 		return 0
 	}
 	bucketAddr := bucket * ht.BucketSize
-	if next, _ := binary.Uvarint(ht.File.Buf[bucketAddr : bucketAddr+BUCKET_HEADER_SIZE]); next != 0 && next != BUCKET_HEADER_NEW && next <= bucket {
-		log.Printf("ERROR: Bucket loop in hash table %s at bucket no.%d, address %d\n", ht.File.Name, bucket, bucketAddr)
+	if next, _ := binary.Uvarint(ht.File.Buf[bucketAddr : bucketAddr+BUCKET_HEADER_SIZE]); next == 0 {
 		return 0
-	} else if next >= ht.NumBuckets {
+	} else if next <= bucket {
+		log.Printf("ERROR: Bucket loop in hash table %s at bucket no.%d, address %d", ht.File.Name, bucket, bucketAddr)
 		return 0
-	} else if next == BUCKET_HEADER_NEW {
+	} else if next >= ht.NumBuckets || next < ht.InitialBuckets {
+		log.Printf("ERROR: Bad bucket refernece (%d is out of range %d - %d) in %s", next, ht.InitialBuckets, ht.NumBuckets, ht.File.Name)
 		return 0
 	} else {
 		return next
@@ -111,9 +125,6 @@ func (ht *HashTable) grow(bucket uint64) {
 	}
 	lastBucketAddr := ht.lastBucket(bucket) * ht.BucketSize
 	binary.PutUvarint(ht.File.Buf[lastBucketAddr:lastBucketAddr+10], ht.NumBuckets)
-	// mark the new bucket
-	newBucketAddr := ht.File.UsedSize
-	binary.PutUvarint(ht.File.Buf[newBucketAddr:newBucketAddr+10], BUCKET_HEADER_NEW)
 	ht.File.UsedSize += ht.BucketSize
 	ht.NumBuckets += 1
 	ht.tableGrowMutex.Unlock()
