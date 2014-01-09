@@ -9,6 +9,7 @@ import (
 	"math/rand"
 	"os"
 	"runtime"
+	"runtime/pprof"
 	"strconv"
 	"strings"
 	"sync"
@@ -286,6 +287,14 @@ func benchmark3(benchSize int) {
 			panic("insert error")
 		}
 	})
+
+	// Start profiler
+	resultFile, err := os.Create("perf.out")
+	if err != nil {
+		panic(err)
+	}
+	pprof.StartCPUProfile(resultFile)
+	defer pprof.StopCPUProfile()
 	// Benchmark read document by UID
 	average("read", benchSize, func() {
 		col.ForAll(func(id uint64, doc interface{}) bool {
@@ -309,16 +318,5 @@ func benchmark3(benchSize int) {
 			fmt.Println("This UID cannot be read back", uid, err)
 		}
 	}
-
-	// Benchmark update document by UID
-	halfBenchSize := benchSize / 2
-	average("update", halfBenchSize, func() {}, func() {
-		col.UpdateByUID(uids[rand.Intn(halfBenchSize)], docs[rand.Intn(halfBenchSize)])
-	})
-
-	// Benchmark delete document by UID
-	average("delete", benchSize/2, func() {}, func() {
-		col.DeleteByUID(uids[halfBenchSize+rand.Intn(halfBenchSize)])
-	})
 	col.Close()
 }
