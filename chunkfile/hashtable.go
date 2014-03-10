@@ -3,14 +3,14 @@ package chunkfile
 
 import (
 	"encoding/binary"
-	"github.com/HouzuoGuo/tiedot/commonfile"
-	"github.com/HouzuoGuo/tiedot/tdlog"
+	"github.com/steveoc64/tiedot/commonfile"
+	"github.com/steveoc64/tiedot/tdlog"
 	"math"
 	"sync"
 )
 
 const (
-	HT_FILE_SIZE       = uint64(1024 * 1024 * 8) // Size of a hash table, it may grow by this size
+	HT_FILE_SIZE       = uint64(256 * 1024 * 1) // Size of a hash table, it may grow by this size
 	ENTRY_VALID        = byte(1)                 // Entry valid flag
 	ENTRY_INVALID      = byte(0)                 // Entry invalid flag
 	ENTRY_SIZE         = uint64(1 + 10 + 10)     // Size of entry header - validity (byte), hash key (uint64) and value (uint64)

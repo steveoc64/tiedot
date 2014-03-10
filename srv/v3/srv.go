@@ -3,8 +3,8 @@ package v3
 
 import (
 	"fmt"
-	"github.com/HouzuoGuo/tiedot/db"
-	"github.com/HouzuoGuo/tiedot/tdlog"
+	"github.com/steveoc64/tiedot/db"
+	"github.com/steveoc64/tiedot/tdlog"
 	"net/http"
 	"sync"
 	"time"

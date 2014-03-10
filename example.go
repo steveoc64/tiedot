@@ -3,7 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/HouzuoGuo/tiedot/db"
+	"github.com/steveoc64/tiedot/db"
 	"math/rand"
 	"os"
 	"time"

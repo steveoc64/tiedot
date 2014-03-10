@@ -4,9 +4,9 @@ package db
 import (
 	"errors"
 	"fmt"
-	"github.com/HouzuoGuo/tiedot/chunk"
-	"github.com/HouzuoGuo/tiedot/tdlog"
-	"github.com/HouzuoGuo/tiedot/uid"
+	"github.com/steveoc64/tiedot/chunk"
+	"github.com/steveoc64/tiedot/tdlog"
+	"github.com/steveoc64/tiedot/uid"
 	"regexp"
 	"strconv"
 	"strings"

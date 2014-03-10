@@ -6,9 +6,9 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/HouzuoGuo/tiedot/chunkfile"
-	"github.com/HouzuoGuo/tiedot/tdlog"
-	"github.com/HouzuoGuo/tiedot/uid"
+	"github.com/steveoc64/tiedot/chunkfile"
+	"github.com/steveoc64/tiedot/tdlog"
+	"github.com/steveoc64/tiedot/uid"
 	"os"
 	"path"
 )

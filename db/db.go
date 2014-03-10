@@ -4,7 +4,7 @@ package db
 import (
 	"errors"
 	"fmt"
-	"github.com/HouzuoGuo/tiedot/tdlog"
+	"github.com/steveoc64/tiedot/tdlog"
 	"io/ioutil"
 	"os"
 	"path"

@@ -1,5 +1,13 @@
 Keywords: Golang, go, document database, NoSQL, JSON
 
+
+This is a simple fork of https://github.com/HouzuoGuo/tiedot, with mods to handle much smaller data files.
+
+Data Block size reduced from 16M down to 512K.
+HashTable size reduced from 8M to 256K
+
+... thats all !!
+
 <img src="http://golang.org/doc/gopher/frontpage.png" alt="Golang logo" align="right"/>
 
 ### tiedot - Your NoSQL database powered by Golang

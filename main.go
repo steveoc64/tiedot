@@ -3,9 +3,9 @@ package main
 
 import (
 	"flag"
-	"github.com/HouzuoGuo/tiedot/db"
-	"github.com/HouzuoGuo/tiedot/srv/v3"
-	"github.com/HouzuoGuo/tiedot/tdlog"
+	"github.com/steveoc64/tiedot/db"
+	"github.com/steveoc64/tiedot/srv/v3"
+	"github.com/steveoc64/tiedot/tdlog"
 	"log"
 	"math/rand"
 	"os"

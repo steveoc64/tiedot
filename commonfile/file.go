@@ -4,8 +4,8 @@ package commonfile
 import (
 	"errors"
 	"fmt"
-	"github.com/HouzuoGuo/tiedot/gommap"
-	"github.com/HouzuoGuo/tiedot/tdlog"
+	"github.com/steveoc64/tiedot/gommap"
+	"github.com/steveoc64/tiedot/tdlog"
 	"os"
 )
 

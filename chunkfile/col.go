@@ -5,18 +5,18 @@ import (
 	"encoding/binary"
 	"errors"
 	"fmt"
-	"github.com/HouzuoGuo/tiedot/commonfile"
-	"github.com/HouzuoGuo/tiedot/tdlog"
+	"github.com/steveoc64/tiedot/commonfile"
+	"github.com/steveoc64/tiedot/tdlog"
 )
 
 const (
 	/* Be aware that, changing the following constants will almost certainly require a number of test cases to be re-written. */
 
-	COL_FILE_SIZE   = uint64(1024 * 1024 * 16) // Size of collection data file
-	DOC_MAX_ROOM    = uint64(1024 * 1024 * 16) // Max single document size
-	DOC_HEADER_SIZE = 1 + 10                   // Size of document header - validity (byte), document room (uint64)
-	DOC_VALID       = byte(1)                  // Document valid flag
-	DOC_INVALID     = byte(0)                  // Document invalid flag
+	COL_FILE_SIZE   = uint64(512 * 1024 * 1) // Size of collection data file
+	DOC_MAX_ROOM    = uint64(512 * 1024 * 1) // Max single document size
+	DOC_HEADER_SIZE = 1 + 10                 // Size of document header - validity (byte), document room (uint64)
+	DOC_VALID       = byte(1)                // Document valid flag
+	DOC_INVALID     = byte(0)                // Document invalid flag
 
 	// Pre-compiled document padding (2048 spaces)
 	PADDING = "                                                                                                                                " +

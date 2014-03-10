@@ -3,8 +3,8 @@ package db
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/HouzuoGuo/tiedot/chunk"
-	"github.com/HouzuoGuo/tiedot/chunkfile"
+	"github.com/steveoc64/tiedot/chunk"
+	"github.com/steveoc64/tiedot/chunkfile"
 	"os"
 	"strings"
 	"testing"
